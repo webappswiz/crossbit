@@ -1,0 +1,20 @@
+{
+	"public": {
+		"serverType": "development"
+	},
+
+	"private": {
+		"emailTemplates": {
+			"siteName": "CrossBit",
+			"from"    : "CrossBit <crossbit@webappsconsult.com>"
+		},
+		"serviceConfigurations": {
+			"facebook": {
+				"service"   : "facebook",
+				"appId"     : "395215784012993",
+				"secret"    : "2c27db2938e651188777e3d98d8f104f",
+				"loginStyle": "popup"
+			}
+		}
+	}
+}
