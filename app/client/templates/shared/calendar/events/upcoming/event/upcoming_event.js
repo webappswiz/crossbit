@@ -10,10 +10,20 @@ var showModal = function ( calendarEventId ) {
 Template.upcomingEvent.events({
 	'click .news-title a': function ( event, template ) {
 		event.preventDefault();
-
+		// TODO: Remove id from element, we can get id from the current data
 		var id = $( event.currentTarget ).attr( 'id' );
 
 		if ( id ) showModal( id );
+	},
+
+	'click #joinSession': function ( event, template ) {
+		event.preventDefault();
+
+		var session = Sessions.find({
+				invitationId: this._id
+			}).fetch();
+
+		if ( session.length ) Router.go( '/session/' + session[ 0 ]._id );
 	}
 });
 
@@ -45,7 +55,9 @@ Template.upcomingEvent.helpers({
 
 	eventType: function () {
 		if ( this.type == 'group' ) {
-			return this.type + ' (' + this.maxAttendees + ')';
+			var attendees = ( this.attendees ) ? this.attendees.length : 0;
+
+			return this.type + ' (' + attendees + '/' + this.maxAttendees + ')';
 		} else {
 			return this.type;
 		}

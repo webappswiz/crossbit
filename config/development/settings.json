@@ -1,6 +1,14 @@
 {
 	"public": {
-		"serverType": "development"
+		"serverType": "development",
+		"LiveTutor": {
+			"OpenTok": {
+				"key": "45323092"
+			},
+			"Filepicker": {
+				"key": "A4uYZaAA4TOCpbSDXwN7tz"
+			}
+		}
 	},
 
 	"private": {
@@ -14,6 +22,11 @@
 				"appId"     : "395215784012993",
 				"secret"    : "2c27db2938e651188777e3d98d8f104f",
 				"loginStyle": "popup"
+			}
+		},
+		"LiveTutor": {
+			"OpenTok": {
+				"secret": "97a608d4dd81294ddee00684c3dcc51c7dc14900"
 			}
 		}
 	}

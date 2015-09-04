@@ -68,7 +68,7 @@ var calendarEvent,
 	attendCalendarEvent = function ( id, userId ) {
 		CalendarEvents.update( id, {
 			$push: {
-				participants: userId
+				attendees: userId
 			}
 		});
 	},
@@ -76,7 +76,7 @@ var calendarEvent,
 	leaveCalendarEvent = function ( id, userId ) {
 		CalendarEvents.update( id, {
 			$pull: {
-				participants: userId
+				attendees: userId
 			}
 		});
 	},
@@ -104,10 +104,44 @@ Template.scheduledEvent.events({
 	},
 
 	'click #publishSession': function ( event, template ) {
+		var options = {
+				// TODO: Implement proper invitations
+				invitationId    : calendarEvent._id,
+
+				type            : template.find( '#eventTypeSelect' ).value,	// ['private'|'group'|'public']
+
+				tutorId         : Meteor.userId(),
+				moderatorId     : Meteor.userId(),
+				studentId       : [],
+
+				openTokApiKey   : Meteor.settings.public.LiveTutor.OpenTok.key/*,
+				filepickerApiKey: Meteor.settings.public.LiveTutor.Filepicker.key*/
+			},
+			session;
+
 		if ( calendarEvent.published ) {
+			session = Sessions.findOne({
+				invitationId: calendarEvent._id
+			});
+
+			if ( session.length ) {
+				CB.sessions.setStatus( session._id, 'inactive' );
+			}
+
 			unpublishCalendarEvent( calendarEvent._id );
 		} else {
-			publishCalendarEvent( calendarEvent._id );
+			Meteor.call( 'LiveTutor.session.create', options, function ( error, session ) {
+				if ( error ) {
+					alert( 'There has been some error!\n\nSorry, the session can not be published at the moment.' );
+				} else {
+					if ( session && session._id ) {
+						CB.sessions.setStatus( session._id, 'active' );
+						// UM.invitations.setStatus( invitation._id, 'active' );
+
+						publishCalendarEvent( session.invitationId );
+					}
+				}
+			});
 		}
 
 		hideModal();
@@ -145,10 +179,16 @@ Template.scheduledEvent.events({
 		if ( Meteor.userId() ) {
 			var calEvent = ( calendarEvent ) ? calendarEvent : this;
 
-			if ( $.inArray( Meteor.userId(), calEvent.participants ) > -1 ) {
+			if ( $.inArray( Meteor.userId(), calEvent.attendees ) > -1 ) {
 				leaveCalendarEvent( calEvent._id, Meteor.userId() );
 			} else {
-				attendCalendarEvent( calEvent._id, Meteor.userId() );
+				var attendees = ( calEvent.attendees ) ? calEvent.attendees.length : 0;
+
+				if ( attendees < calEvent.maxAttendees ) {
+					attendCalendarEvent( calEvent._id, Meteor.userId() );
+				} else {
+					alert( 'We\'re sorry, but this session is fully booked.' );
+				}
 			}
 		} else {
 			Router.go( '/login' );
@@ -191,7 +231,9 @@ Template.scheduledEvent.helpers({
 			return calendarEvent.type;
 		} else {
 			if ( this.type == 'group' ) {
-				return this.type + ' (' + this.maxAttendees + ')';
+				var attendees = ( this.attendees ) ? this.attendees.length : 0;
+
+				return this.type + ' (' + attendees + '/' + this.maxAttendees + ')';
 			} else {
 				return this.type;
 			}
@@ -237,10 +279,16 @@ Template.scheduledEvent.helpers({
 	buttonTitle: function () {
 		var calEvent = ( calendarEvent ) ? calendarEvent : this;
 
-		if ( $.inArray( Meteor.userId(), calEvent.participants ) > -1 ) {
+		if ( $.inArray( Meteor.userId(), calEvent.attendees ) > -1 ) {
 			return 'Unsubscribe';
 		} else {
-			return 'Subscribe';
+			var attendees = ( calEvent.attendees ) ? calEvent.attendees.length : 0;
+
+			if ( attendees < calEvent.maxAttendees ) {
+				return 'Subscribe';
+			} else {
+				return 'Sold out!';
+			}
 		}
 	}
 });

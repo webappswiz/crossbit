@@ -27,7 +27,7 @@ Template.popularEvents.helpers({
 			start: {
 				$gte: new Date()
 			},
-			participants: {
+			attendees: {
 				$size: {
 					$gte: minPopularAttendees
 				}

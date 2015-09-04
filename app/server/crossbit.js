@@ -54,54 +54,83 @@ _.extend( CB, {
 			Meteor.call( 'Email.send', options );
 		},
 
-		sendSessionInvitation: function ( invitation ) {
+		// sendSessionInvitation: function ( invitation ) {
+		// 	var emailOptions = {
+		// 			from   : 'crossbit@webappsconsult.com',
+		// 			subject: '[CrossBit] You\'re invited!'
+		// 		},
+		// 		data = {
+		// 			invitationId: invitation._id,
+		// 			inviter     : Meteor.users.findOne( invitation.inviter ),
+		// 			invitee     : Meteor.users.findOne( invitation.invitee ),
+		// 			subject     : invitation.subject,
+		// 			info        : invitation.info
+		// 		},
+		// 		templateName = 'templates/email/email_session_invitation.html',
+		// 		template;
+
+		// 	if ( invitation.status == 'invited' ) {
+		// 		try {
+		// 			template = Assets.getText( templateName );
+		// 		} catch ( error ) {
+		// 			// No template!
+		// 			console.error( '[Send Invitation] Error: Couldn\'t find template "%s"', templateName );
+		// 		}
+
+		// 		if ( template ) {
+		// 			if ( !Template.sessionInvitation ) {
+		// 				SSR.compileTemplate( 'sessionInvitation', template );
+
+		// 				Template.sessionInvitation.helpers({
+		// 					absoluteUrl: function () {
+		// 						return Meteor.absoluteUrl();
+		// 					},
+
+		// 					linkUrl: function () {
+		// 						return Meteor.absoluteUrl( 'accept-invitation/' + data.invitationId );
+		// 					}
+		// 				});
+		// 			}
+
+		// 			emailOptions.html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n' +
+		// 				SSR.render( 'sessionInvitation', data );
+
+		// 			if ( emailOptions.html ) {
+		// 				emailOptions.to = data.invitee.emails[ 0 ].address;
+
+		// 				CB.emails.send( emailOptions );
+		// 			}
+		// 		}
+		// 	}
+		// },
+
+		sendSessionInvitation: function ( session ) {
 			var emailOptions = {
-					from   : 'crossbit@webappsconsult.com',
-					subject: '[CrossBit] You\'re invited!'
+					from   : 'CrossBitMVP <crossbit@webappsconsult.com>',
+					subject: '[CrossBitMVP] You\'re invited!'
 				},
-				data = {
-					invitationId: invitation._id,
-					inviter     : Meteor.users.findOne( invitation.inviter ),
-					invitee     : Meteor.users.findOne( invitation.invitee ),
-					subject     : invitation.subject,
-					info        : invitation.info
+				invitee = Meteor.users.findOne( session.tutorId ),
+				inviter = Meteor.users.findOne( session.studentId ),
+				emailTemplate = new EmailTemplate( 'templates/email/session/invite_trainer.html' );
+
+			emailOptions.html = emailTemplate.render(
+				// templateHelpers
+				{
+					trainerName: Accounts.custom.userFirstName( invitee ),
+					memberName : Accounts.custom.userFirstName( inviter ),
+					absoluteUrl: Meteor.absoluteUrl()
 				},
-				templateName = 'templates/email/email_session_invitation.html',
-				template;
-
-			if ( invitation.status == 'invited' ) {
-				try {
-					template = Assets.getText( templateName );
-				} catch ( error ) {
-					// No template!
-					console.error( '[Send Invitation] Error: Couldn\'t find template "%s"', templateName );
+				// templateValues
+				{
+					url : Meteor.absoluteUrl() + 'session/' + session._id
 				}
+			);
 
-				if ( template ) {
-					if ( !Template.sessionInvitation ) {
-						SSR.compileTemplate( 'sessionInvitation', template );
+			if ( emailOptions.html ) {
+				emailOptions.to = invitee.emails[ 0 ].address;
 
-						Template.sessionInvitation.helpers({
-							absoluteUrl: function () {
-								return Meteor.absoluteUrl();
-							},
-
-							linkUrl: function () {
-								return Meteor.absoluteUrl( 'accept-invitation/' + data.invitationId );
-							}
-						});
-					}
-
-					emailOptions.html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n' +
-						SSR.render( 'sessionInvitation', data );
-
-					if ( emailOptions.html ) {
-						emailOptions.to = data.invitee.emails[ 0 ].address;
-
-						CB.emails.send( emailOptions );
-					}
-				}
-			}
+				CB.emails.send( emailOptions );
+			};
 		},
 
 		sendSessionAcceptance: function ( invitation ) {

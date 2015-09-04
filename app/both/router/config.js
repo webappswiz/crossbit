@@ -26,7 +26,11 @@ var mustBeSignedIn = function () {
 Router.configure({
 	layoutTemplate  : 'MasterLayout',
 	loadingTemplate : 'Loading',
-	notFoundTemplate: 'NotFound'
+	notFoundTemplate: 'NotFound'/*,
+
+	preload: {
+		verbose: true
+	}*/
 });
 
 Router.onBeforeAction( mustBeSignedIn, {

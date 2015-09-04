@@ -19,7 +19,9 @@ export PORT=1337
 # https://app.compose.io
 
 # SMTP settings
-# export MAIL_URL="smtp://postmaster%40sandboxb45ea6bb1d46474f9397d9cf90e1b45f.mailgun.org:587/"
 # export MAIL_URL="smtp://postmaster%40sandboxb45ea6bb1d46474f9397d9cf90e1b45f.mailgun.org:307744cc69a2b85fe68339f362bbdb5d@smtp.mailgun.org:587"
+export MAIL_URL="smtp://postmaster@webappsconsult.com:f941f5d8ca49d395aeb1a1ff993cbed3@smtp.mailgun.org:587"
 # Management:
 # https://mailgun.com/cp
+
+stubborn

@@ -17,15 +17,21 @@ Meteor.methods({
 		Email.send( options );
 	},
 
-	'Email.sendSessionInvitation': function ( invitation ) {
-		check( invitation, Object );
+	// 'Email.sendSessionInvitation': function ( invitation ) {
+	// 	check( invitation, Object );
 
-		UM.emails.sendSessionInvitation( invitation );
+	// 	CB.emails.sendSessionInvitation( invitation );
+	// },
+
+	'Email.sendSessionInvitation': function ( session ) {
+		check( session, Object );
+
+		CB.emails.sendSessionInvitation( session );
 	},
 
 	'Email.sendSessionAcceptance': function ( invitation ) {
 		check( invitation, Object );
 
-		UM.emails.sendSessionAcceptance( invitation );
+		CB.emails.sendSessionAcceptance( invitation );
 	}
 });

@@ -27,10 +27,10 @@ Template.scheduledEvents.helpers({
 
 		if ( user ) {
 			return CalendarEvents.find( eventFilter, {
-				owner: user._id,
-				start: {
-					$gte: new Date()
-				},
+				// owner: user._id,
+				// start: {
+				// 	$gte: new Date()
+				// },
 				sort     : {
 					start: 0
 				},
@@ -63,13 +63,21 @@ Template.scheduledEvents.onCreated( function () {
 			owner: ( profileUser ) ? profileUser._id : null
 		},
 		myself: {
+			// Show only future sessions
+			start: {
+				$gte: new Date()
+			},
 			// Show sessions I've joined
-			participants: Meteor.userId(),
+			attendees: Meteor.userId(),
 			published: true
 		},
 		other: {
-			// Show sessions other joined
-			participants: ( profileUser ) ? profileUser._id : null,
+			// Show only future sessions
+			start: {
+				$gte: new Date()
+			},
+			// Show sessions others joined
+			attendees: ( profileUser ) ? profileUser._id : null,
 			published: true
 		}
 	};
@@ -80,6 +88,9 @@ Template.scheduledEvents.onCreated( function () {
 		if ( CB.user.isTrainer( profileUser._id ) ) {
 			eventFilter = filterFor.trainer;
 			eventFilter.published = true;
+			eventFilter.start = {
+				$gte: new Date()
+			};
 		} else {
 			eventFilter = filterFor.other;
 		}

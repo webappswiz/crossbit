@@ -14,6 +14,16 @@ Template.attendingEvent.events({
 		var id = $( event.currentTarget ).attr( 'id' );
 
 		// if ( id ) showModal( id );
+	},
+
+	'click #joinSession': function ( event, template ) {
+		event.preventDefault();
+
+		var session = Sessions.find({
+				invitationId: this._id
+			}).fetch();
+
+		if ( session.length ) Router.go( '/session/' + session[ 0 ]._id );
 	}
 });
 
@@ -45,7 +55,9 @@ Template.attendingEvent.helpers({
 
 	eventType: function () {
 		if ( this.type == 'group' ) {
-			return this.type + ' (' + this.maxAttendees + ')';
+			var attendees = ( this.attendees ) ? this.attendees.length : 0;
+
+			return this.type + ' (' + attendees + '/' + this.maxAttendees + ')';
 		} else {
 			return this.type;
 		}

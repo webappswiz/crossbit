@@ -61,6 +61,55 @@ Template.profile.events({
 				$( event.currentTarget ).prop( 'disabled', '' );
 			}
 		});
+	},
+
+	'click #requestSession': function ( event, template ) {
+		var inviterId = Meteor.userId(),
+			inviteeId = userForProfile()._id,
+			options;
+
+		if ( !inviterId ) Router.go( 'login' );
+
+		options = {
+			// TODO: Implement proper invitations
+			invitationId    : Random.id(),
+
+			type            : 'private',	// ['private'|'group'|'public']
+
+			tutorId         : inviteeId,
+			moderatorId     : inviteeId,
+			studentId       : inviterId,
+
+			openTokApiKey   : Meteor.settings.public.LiveTutor.OpenTok.key/*,
+			filepickerApiKey: Meteor.settings.public.LiveTutor.Filepicker.key*/
+		};
+
+		Meteor.call( 'LiveTutor.session.create', options, function ( error, session ) {
+			if ( error ) {
+				// Handle error...
+			} else {
+				if ( session && session._id ) {
+					CB.sessions.setStatus( session._id, 'active' );
+					// UM.invitations.setStatus( invitation._id, 'active' );
+
+					CB.emails.sendSessionInvitation( session, function ( error, result ) {
+						if ( error ) {
+							alert(
+								'Your request has not been sent.\n\n' +
+								'Please, contact the support to resolve this issue.'
+							);
+						} else {
+							alert(
+								'Your request has been sent.\n\n' +
+								'You\'ll be redirected to the session now.'
+							);
+
+							Router.go( '/session/' + session._id );
+						}
+					});
+				}
+			}
+		});
 	}
 });
 

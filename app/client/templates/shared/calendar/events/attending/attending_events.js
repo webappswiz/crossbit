@@ -27,7 +27,8 @@ Template.attendingEvents.helpers({
 				start: {
 					$gte: new Date()
 				},
-				participants: Meteor.userId()
+				attendees: Meteor.userId(),
+				published: true
 			};
 
 		if ( !thisIsMyProfile ) filter.owner = trainerId;

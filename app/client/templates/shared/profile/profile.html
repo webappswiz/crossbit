@@ -144,7 +144,7 @@
 														<label for="summary">Summary:</label>
 														<textarea id="summary" name="summary" placeholder="{{summaryPlaceholder }}" rows="8" class="control" value="{{user.profile.summary }}"></textarea>
 													{{else }}
-														<div class="short-description">{{user.profile.summary }}</div>
+														<div class="short-description">{{ user.profile.summary }}</div>
 													{{/if }}
 														<div class="clearfix"></div>
 
@@ -185,7 +185,7 @@
 														</div>
 													{{else }}
 														<div class="add-to-box">
-															<button class="button btn-cart" title="Request Session" type="button">
+															<button id="requestSession" name="requestSession" class="button btn-cart" title="Request Session" type="button">
 																<em class="fa-icon"><i class="fa fa-shopping-cart"></i></em>
 																<span>Request Session</span>
 															</button>

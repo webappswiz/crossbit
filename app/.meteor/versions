@@ -11,7 +11,9 @@ blaze@2.1.2
 blaze-tools@1.0.3
 boilerplate-generator@1.0.3
 callback-hook@1.0.3
+carlodicelico:tokbox@2.2.8
 check@1.0.5
+coffeescript@1.0.6
 ddp@1.1.0
 deps@1.0.7
 ejson@1.0.6
@@ -51,9 +53,13 @@ minifiers@1.1.5
 minimongo@1.0.8
 miro:accounts-custom@1.0.0
 miro:email-templates@0.0.1
+miro:notifications@0.1.0
+miro:preloader@1.2.4
 miro:uncss@0.0.1
 mizzao:build-fetcher@0.2.0
 mizzao:jquery-ui@1.11.4
+mizzao:timesync@0.3.3
+mizzao:user-status@0.6.5
 mobile-status-bar@1.0.3
 momentjs:moment@2.10.6
 momentjs:twix@0.7.2

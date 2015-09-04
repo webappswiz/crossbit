@@ -1,4 +1,4 @@
-AccountController = RouteController.extend({
+AccountController = HomeController.extend({
 	onBeforeAction: function () {
 		var self      = this,
 			routeName = self.route.getName(),
